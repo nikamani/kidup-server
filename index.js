@@ -331,6 +331,9 @@ app.get('/api', function (req, res) {
 
 //---------------   PORT
 
+app.listen(8080, function() {
+  console.console.log("app listen on port 8080");
+})
 app.listen(process.env.PORT || 8080, function(){
   console.log('App listening on port 8080!', this.address().port, app.settings.env);
 });
