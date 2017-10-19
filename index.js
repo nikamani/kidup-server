@@ -113,7 +113,7 @@ router.route('/kids/times/:kid_id')
          times.forEach(function (time){
            totaltime += time.time;
          });
-         res.json(totaltime);
+         res.json({time : totaltime});
       });
     })
 
