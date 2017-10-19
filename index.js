@@ -113,7 +113,7 @@ router.route('/kids/times/:kid_id')
          times.forEach(function (time){
            totaltime += time.time;
          });
-         res.json({ "total time" : totaltime });
+         res.json(totaltime);
       });
     })
 
@@ -329,6 +329,11 @@ app.get('/api', function (req, res) {
 })
 
 //---------------   PORT
+
+app.listen(process.env.PORT || 8080, function(){
+  console.log('App listening on port 8080!', this.address().port, app.settings.env);
+});
+
 app.listen(8080, function () {
   console.log('App listening on port 8080!')
 });
