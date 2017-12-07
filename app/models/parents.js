@@ -3,8 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var parentSchema = new Schema({
-	email: String,
-	name: String,
+	userName: String,
 	password : String
 });
 

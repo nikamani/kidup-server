@@ -127,21 +127,20 @@ router.route('/kids/times/:kid_id')
 router.route('/parents')
 	//-- create parent
 	.post(function(req, res) {
-			if (req.body.email == null) {
-				res.json({ message : "Please fill the email!"});
+			if (req.body.userName == null) {
+				res.json({ message : "Please fill the username!"});
 			}else if (req.body.password == null) {
 				res.json({ message : "Please fill the password!"});
 			}else{
-				Parent.findOne({ email : req.body.email} , function(err, parent){
+				Parent.findOne({ userName : req.body.userName} , function(err, parent){
 					if (err) throw err;
 					if (parent) {
-						res.json({ message : "Email has been used!"});
+						res.json({ message : "Username has been used!"});
 					}
 					else {
 						var hashedPassword = passwordHash.generate(req.body.password); 
 						var parent = new Parent({
-							email : req.body.email,
-							name : req.body.name,
+							userName : req.body.userName,
 							password : hashedPassword
 					});
 
@@ -168,7 +167,7 @@ router.route('/parents')
 router.route('/parents/login')
 	//--check login
 	.post(function(req,res){
-		Parent.findOne({email : req.body.email}, function(err, parent) {
+		Parent.findOne({userName : req.body.userName}, function(err, parent) {
 			if (err) throw err;
 			if (parent) {
 				if (passwordHash.verify(req.body.password, parent.password)) {
@@ -179,7 +178,7 @@ router.route('/parents/login')
 				
 			}
 			else {
-				res.json({message : "Wrong email!"})
+				res.json({message : "Wrong Username!"})
 			}
 		})
 	})
