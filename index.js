@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var configDB = require('./config/database.js');
 var cors = require('cors');
+var passwordHash = require('password-hash');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -126,36 +127,31 @@ router.route('/kids/times/:kid_id')
 router.route('/parents')
 	//-- create parent
 	.post(function(req, res) {
-		// if (Parent.length() == 0) {
-		// 	var parent = new Parent({
-		// 			email : req.body.email,
-		// 			name : req.body.name
-		// 		});
-
-		// 		parent.save(function(err) {
-		// 			if (err) {throw err;}
-		// 			res.json({ message : "Parent created!"});
-		// 		});
-		// }
-		// else{
-			Parent.findOne({ email : req.body.email} , function(err, parent){
-				if (err) throw err;
-				if (parent) {
-					res.json({ message : "Email has been used!"});
-				}
-				else {
-					var parent = new Parent({
-						email : req.body.email,
-						name : req.body.name
-				});
-
-				parent.save(function(err) {
-						if (err) {throw err;}
-						res.json({ message : "Parent created!"});
+			if (req.body.email == null) {
+				res.json({ message : "Please fill the email!"});
+			}else if (req.body.password == null) {
+				res.json({ message : "Please fill the password!"});
+			}else{
+				Parent.findOne({ email : req.body.email} , function(err, parent){
+					if (err) throw err;
+					if (parent) {
+						res.json({ message : "Email has been used!"});
+					}
+					else {
+						var hashedPassword = passwordHash.generate(req.body.password); 
+						var parent = new Parent({
+							email : req.body.email,
+							name : req.body.name,
+							password : hashedPassword
 					});
-				}
-			});
-		// }
+
+					parent.save(function(err) {
+							if (err) {throw err;}
+							res.json({ message : "Parent created!"});
+						});
+					}
+				});
+			}
 	})
 
 
@@ -175,10 +171,15 @@ router.route('/parents/login')
 		Parent.findOne({email : req.body.email}, function(err, parent) {
 			if (err) throw err;
 			if (parent) {
-				res.json(parent);
+				if (passwordHash.verify(req.body.password, parent.password)) {
+					res.json(parent);
+				} else {
+					res.json({message : "Wrong password!"})
+				}
+				
 			}
 			else {
-				res.json({message : "Login fail!"})
+				res.json({message : "Wrong email!"})
 			}
 		})
 	})

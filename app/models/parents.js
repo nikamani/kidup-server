@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 
 var parentSchema = new Schema({
 	email: String,
-	name: String
+	name: String,
+	password : String
 });
 
 module.exports = mongoose.model('Parent', parentSchema);
